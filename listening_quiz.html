@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Tập Nghe Hiểu Tương Tác - Health Problems</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chalkboard-SE&family=Fredoka+One&family=Quicksand:wght@500;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #f6f9fc 0%, #eef2f7 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #2d3748;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: #ffffff;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+            padding: 40px;
+            border: 4px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #4a5568;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #3182ce, #319795);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .instruction {
+            font-size: 1.2rem;
+            color: #718096;
+            font-weight: 700;
+            background: #edf2f7;
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: inline-block;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .score-board {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.4rem;
+            color: #2b6cb0;
+            background: #ebf8ff;
+            padding: 8px 20px;
+            border-radius: 15px;
+            border: 2px solid #bee3f8;
+        }
+
+        .progress-container {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.4rem;
+            color: #2c7a7b;
+            background: #e6fffa;
+            padding: 8px 20px;
+            border-radius: 15px;
+            border: 2px solid #b2f5ea;
+        }
+
+        .audio-section {
+            background: #f7fafc;
+            border: 3px dashed #cbd5e0;
+            border-radius: 24px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            gap: 20px;
+            position: relative;
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(72, 187, 120, 0.3);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .play-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(72, 187, 120, 0.4);
+        }
+
+        .play-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+        }
+
+        .play-btn.playing {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            box-shadow: 0 8px 15px rgba(237, 137, 54, 0.3);
+        }
+
+        .speaker-source-box {
+            background: #ffffff;
+            border: 3px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 15px 35px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .draggable-speaker {
+            font-size: 3.5rem;
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.2s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .draggable-speaker:active {
+            cursor: grabbing;
+        }
+
+        .draggable-speaker.dragging {
+            opacity: 0.4;
+            transform: scale(1.2);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+            100% { transform: scale(1); }
+        }
+
+        .pictures-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .pictures-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .drop-zone {
+            background: #ffffff;
+            border: 4px solid #e2e8f0;
+            border-radius: 24px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 220px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.02);
+        }
+
+        .drop-zone:hover {
+            border-color: #cbd5e0;
+            transform: translateY(-4px);
+        }
+
+        .drop-zone.drag-over {
+            border-color: #4facfe;
+            background: #f0f7ff;
+            transform: scale(1.02);
+        }
+
+        .label-circle {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            background: #4a5568;
+            color: #ffffff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        /* Minh họa hoạt hình bằng CSS/SVG/Emoji siêu đẹp */
+        .illustration-box {
+            width: 120px;
+            height: 120px;
+            background: #f7fafc;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+            font-size: 4rem;
+            box-shadow: inset 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .drop-zone[data-answer="sore_throat"] .illustration-box { background: #fffaf0; }
+        .drop-zone[data-answer="stomach_ache"] .illustration-box { background: #f0fff4; }
+        .drop-zone[data-answer="headache"] .illustration-box { background: #f7fafc; }
+        .drop-zone[data-answer="toothache"] .illustration-box { background: #fff5f5; }
+
+        .caption {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #4a5568;
+            text-align: center;
+        }
+
+        /* Trạng thái Đúng / Sai câu hỏi */
+        .drop-zone.correct {
+            border-color: #48bb78 !important;
+            background-color: #f0fff4 !important;
+            box-shadow: 0 0 20px rgba(72, 187, 120, 0.2);
+        }
+
+        .drop-zone.correct .caption {
+            color: #276749;
+        }
+
+        .drop-zone.wrong {
+            border-color: #f56565 !important;
+            background-color: #fff5f5 !important;
+            animation: shake 0.5s ease-in-out;
+            box-shadow: 0 0 20px rgba(245, 101, 101, 0.2);
+        }
+
+        .drop-zone.wrong .caption {
+            color: #9b2c2c;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        .speaker-inside-zone {
+            font-size: 2rem;
+            margin-top: 10px;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        #feedbackText {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            min-height: 40px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .text-correct {
+            color: #38a169;
+            font-family: 'Fredoka One', cursive;
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        .text-wrong {
+            color: #e53e3e;
+            font-weight: 700;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-5px); }
+        }
+
+        /* Modal hoàn thành bài */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            z-index: 10;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal h2 {
+            font-family: 'Fredoka One', cursive;
+            color: #2b6cb0;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+
+        .modal p {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 25px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4);
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .restart-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Âm thanh hiệu ứng hệ thống (Ting và Buzzer) -->
+    <audio id="soundTing" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
+    <audio id="soundBuzzer" src="https://assets.mixkit.co/active_storage/sfx/2997/2997-preview.mp3"></audio>
+
+    <div class="container">
+        <header>
+            <h1>Listening Quiz</h1>
+            <div class="instruction">Bấm nút ▶ Nghe hội thoại rồi kéo chiếc loa 🔊 vào đúng bức tranh ứng với triệu chứng nhé!</div>
+        </header>
+
+        <div class="quiz-header">
+            <div class="progress-container" id="progressBox">Câu hỏi: 1 / 4</div>
+            <div class="score-board" id="scoreBox">Điểm số: 0</div>
+        </div>
+
+        <div class="audio-section">
+            <button class="play-btn" id="playAudioBtn">
+                <span id="playIcon">▶</span> <span id="playText">Play Audio</span>
+            </button>
+            <div class="speaker-source-box">
+                <div class="draggable-speaker" id="speakerElement" draggable="true" title="Hãy kéo tôi!">🔊</div>
+            </div>
+        </div>
+
+        <div class="pictures-grid">
+            <!-- Hình a: Sore Throat -->
+            <div class="drop-zone" data-answer="sore_throat">
+                <div class="label-circle">a</div>
+                <div class="illustration-box">🧣🤢</div>
+                <div class="caption">Sore Throat<br><small style="color:#a0aec0;font-weight:500;">(Đau họng)</small></div>
+            </div>
+            
+            <!-- Hình b: Stomach Ache -->
+            <div class="drop-zone" data-answer="stomach_ache">
+                <div class="label-circle">b</div>
+                <div class="illustration-box">😣🍏</div>
+                <div class="caption">Stomach Ache<br><small style="color:#a0aec0;font-weight:500;">(Đau dạ dày)</small></div>
+            </div>
+            
+            <!-- Hình c: Headache -->
+            <div class="drop-zone" data-answer="headache">
+                <div class="label-circle">c</div>
+                <div class="illustration-box">🤕💥</div>
+                <div class="caption">Headache<br><small style="color:#a0aec0;font-weight:500;">(Đau đầu)</small></div>
+            </div>
+            
+            <!-- Hình d: Toothache -->
+            <div class="drop-zone" data-answer="toothache">
+                <div class="label-circle">d</div>
+                <div class="illustration-box">😫🦷</div>
+                <div class="caption">Toothache<br><small style="color:#a0aec0;font-weight:500;">(Đau răng)</small></div>
+            </div>
+        </div>
+
+        <div id="feedbackText"></div>
+    </div>
+
+    <!-- Modal kết thúc game -->
+    <div class="overlay" id="endGameModal">
+        <div class="modal">
+            <h2>Tuyệt Vời! 🎉</h2>
+            <p id="finalScoreText">Bạn đã hoàn thành xuất sắc tất cả các câu hỏi nghe hiểu.</p>
+            <button class="restart-btn" onclick="resetQuiz()">Làm Lại Bài Tập 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        // Audio script chuẩn theo ảnh SGK cung cấp
+        const scriptData = [
+            {
+                text: "You look tired today. What's the matter? I have a stomach ache.",
+                correct: "stomach_ache"
+            },
+            {
+                text: "You don't look well today. What's the matter? I have a headache.",
+                correct: "headache"
+            },
+            {
+                text: "You're very quiet today. What's the matter? I have a sore throat.",
+                correct: "sore_throat"
+            },
+            {
+                text: "You're eating slowly. What's the matter? I have a toothache.",
+                correct: "toothache"
+            }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let speechSynthesisActive = false;
+        let currentUtterance = null;
+
+        const playAudioBtn = document.getElementById('playAudioBtn');
+        const playIcon = document.getElementById('playIcon');
+        const playText = document.getElementById('playText');
+        const speakerElement = document.getElementById('speakerElement');
+        const dropZones = document.querySelectorAll('.drop-zone');
+        const feedbackText = document.getElementById('feedbackText');
+        const progressBox = document.getElementById('progressBox');
+        const scoreBox = document.getElementById('scoreBox');
+        const endGameModal = document.getElementById('endGameModal');
+        const finalScoreText = document.getElementById('finalScoreText');
+
+        const soundTing = document.getElementById('soundTing');
+        const soundBuzzer = document.getElementById('soundBuzzer');
+
+        // Hàm phát âm thanh AI chuẩn bản xứ (Web Speech API)
+        playAudioBtn.addEventListener('click', () => {
+            if (speechSynthesisActive) {
+                window.speechSynthesis.cancel();
+                return;
+            }
+
+            const currentScript = scriptData[currentIndex].text;
+            currentUtterance = new SpeechSynthesisUtterance(currentScript);
+            currentUtterance.lang = 'en-US';
+            currentUtterance.rate = 0.85; // Tốc độ chuẩn sư phạm tiểu học/trung học
+
+            currentUtterance.onstart = () => {
+                speechSynthesisActive = true;
+                playIcon.innerText = "🔊";
+                playText.innerText = "Now Listening...";
+                playAudioBtn.classList.add('playing');
+            };
+
+            currentUtterance.onend = () => {
+                speechSynthesisActive = false;
+                playIcon.innerText = "▶";
+                playText.innerText = "Play Audio";
+                playAudioBtn.classList.remove('playing');
+            };
+
+            window.speechSynthesis.speak(currentUtterance);
+        });
+
+        // Kéo thả API
+        speakerElement.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', 'speaker_icon');
+            speakerElement.classList.add('dragging');
+        });
+
+        speakerElement.addEventListener('dragend', () => {
+            speakerElement.classList.remove('dragging');
+        });
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                if(!zone.classList.contains('correct')) {
+                    zone.classList.add('drag-over');
+                }
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('drag-over');
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                
+                const data = e.dataTransfer.getData('text/plain');
+                if (data === 'speaker_icon' && !zone.classList.contains('correct')) {
+                    validateChoice(zone);
+                }
+            });
+        });
+
+        function validateChoice(zone) {
+            const selectedAnswer = zone.getAttribute('data-answer');
+            const correctAnswer = scriptData[currentIndex].correct;
+
+            // Xóa hiệu ứng sai cũ nếu có
+            dropZones.forEach(z => z.classList.remove('wrong'));
+
+            if (selectedAnswer === correctAnswer) {
+                // ĐÚNG
+                zone.classList.add('correct');
+                soundTing.currentTime = 0;
+                soundTing.play().catch(e => console.log("Sound play delayed"));
+                
+                feedbackText.innerText = "Chính xác! Tuyệt vời! 🌟";
+                feedbackText.className = "text-correct";
+                
+                // Thêm biểu tượng loa nhỏ vào ô đúng
+                const miniSpeaker = document.createElement('div');
+                miniSpeaker.className = 'speaker-inside-zone';
+                miniSpeaker.innerText = '🔊';
+                zone.appendChild(miniSpeaker);
+
+                score += 10;
+                scoreBox.innerText = `Điểm số: ${score}`;
+                
+                speakerElement.style.visibility = 'hidden';
+                speakerElement.draggable = false;
+
+                // Chuyển sang câu tiếp theo
+                setTimeout(() => {
+                    nextLevel();
+                }, 2000);
+            } else {
+                // SAI
+                zone.classList.add('wrong');
+                soundBuzzer.currentTime = 0;
+                soundBuzzer.play().catch(e => console.log("Sound play delayed"));
+                
+                feedbackText.innerText = "Chưa đúng rồi, hãy thử lại nhé! ❌";
+                feedbackText.className = "text-wrong";
+
+                setTimeout(() => {
+                    zone.classList.remove('wrong');
+                    feedbackText.innerText = "";
+                }, 1500);
+            }
+        }
+
+        function nextLevel() {
+            // Xóa loa nhỏ trong ô đúng vừa rồi
+            const activeMiniSpeaker = document.querySelector('.speaker-inside-zone');
+            if (activeMiniSpeaker) activeMiniSpeaker.remove();
+
+            currentIndex++;
+            feedbackText.innerText = "";
+            
+            if (currentIndex < scriptData.length) {
+                progressBox.innerText = `Câu hỏi: ${currentIndex + 1} / ${scriptData.length}`;
+                dropZones.forEach(z => z.classList.remove('correct', 'wrong'));
+                speakerElement.style.visibility = 'visible';
+                speakerElement.draggable = true;
+                
+                // Tự động kích hoạt nghe câu tiếp theo nếu muốn (tùy chọn)
+            } else {
+                // Kết thúc toàn bộ bài tập
+                finalScoreText.innerText = `Bạn đã hoàn thành bài tập nghe với tổng số điểm: ${score} / 40 điểm!`;
+                endGameModal.style.display = 'flex';
+            }
+        }
+
+        function resetQuiz() {
+            currentIndex = 0;
+            score = 0;
+            scoreBox.innerText = "Điểm số: 0";
+            progressBox.innerText = `Câu hỏi: 1 / 4`;
+            feedbackText.innerText = "";
+            dropZones.forEach(z => {
+                z.classList.remove('correct', 'wrong');
+                const ms = z.querySelector('.speaker-inside-zone');
+                if(ms) ms.remove();
+            });
+            speakerElement.style.visibility = 'visible';
+            speakerElement.draggable = true;
+            endGameModal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
